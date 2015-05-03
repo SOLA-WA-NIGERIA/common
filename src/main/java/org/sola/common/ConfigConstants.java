@@ -396,4 +396,18 @@ public class ConfigConstants {
     /** Full path to PostgreSQL utilities (bin) folder (e.g. C:\Program Files\PostgreSQL\9.1\bin). Used for backup/restore implementation of SOLA Web admin application */
     public static final String DB_UTILITIES_FOLDER = "db-utilities-folder";
     
+    /** SOLA product name */
+    public static final String PRODUCT_NAME = "product-name";
+    
+    /** SOLA product code */
+    public static final String PRODUCT_CODE = "product-code";
+    
+    /** SOLA Registry */
+    public static final String SOLA_REGISTRY = "sr";
+    /** SOLA Systematic Registration */
+    public static final String SOLA_SYSTEMATIC_REGISTRATION = "ssr";
+    /** SOLA State Land */
+    public static final String SOLA_STATE_LAND = "ssl";
+    /** SOLA Community Server */
+    public static final String SOLA_COMMUNITY_SERVER = "scs";
 }
