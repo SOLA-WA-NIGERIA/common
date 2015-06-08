@@ -38,6 +38,7 @@ import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -48,9 +49,11 @@ import javax.swing.ImageIcon;
 import org.apache.commons.io.FileUtils;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.io.ZipInputStream;
 import net.lingala.zip4j.model.FileHeader;
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.util.Zip4jConstants;
+import org.apache.commons.io.FileUtils;
 import org.apache.sanselan.Sanselan;
 import org.jvnet.staxex.StreamingDataHandler;
 import org.sola.common.messaging.ClientMessage;
@@ -853,6 +856,33 @@ public class FileUtility {
         }
     }
 
+    public static String compress(String archiveFileName, ArrayList<String> fileNamesToAdd, String password) {
+        String zipFileName = getFileNameWithoutExtension(archiveFileName) + ".zip";
+        String outputFilePath = getCachePath() + File.separator + zipFileName;
+        try {
+            ArrayList filesToAdd = new ArrayList();
+            for (String fileNameToAdd : fileNamesToAdd) {
+                filesToAdd.add(new File(fileNameToAdd));
+            }
+            File currentArchive = new File(outputFilePath);
+            if (currentArchive.exists()){
+                FileUtils.deleteQuietly(currentArchive);
+            }
+            ZipFile zipFile = new ZipFile(outputFilePath);
+            ZipParameters parameters = new ZipParameters();
+            parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+            parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_ULTRA);
+            parameters.setEncryptFiles(true);
+            parameters.setEncryptionMethod(Zip4jConstants.ENC_METHOD_AES);
+            parameters.setAesKeyStrength(Zip4jConstants.AES_STRENGTH_256);
+            parameters.setPassword(password);
+            zipFile.addFiles(filesToAdd, parameters);
+            return zipFileName;
+        } catch (ZipException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
     public static String uncompress(String fileName, String password) throws ZipException {
         fileName = sanitizeFileName(fileName, true);
         //Full path of the file that is compressed
@@ -867,8 +897,52 @@ public class FileUtility {
         zipFile.extractAll(destinationPath);
         return fileUncompressed;
     }
-    
-    /** 
+
+    public static String uncompress(String folderDestination, String archiveFileName, String password) throws ZipException {
+       return uncompress(archiveFileName, password);
+    }
+
+
+    public static ZipFile getArchiveFile(String archiveFileName, String password)
+            throws ZipException {
+        archiveFileName = sanitizeFileName(archiveFileName, true);
+        //Full path of the file that is compressed
+        String inputFilePath = getCachePath() + File.separator + archiveFileName;
+        ZipFile zipFile = new ZipFile(inputFilePath);
+        if (zipFile.isEncrypted()) {
+            zipFile.setPassword(password);
+        }
+        return zipFile;
+    }
+
+    public static byte[] getArchiveFileContent(ZipFile zipFile, FileHeader fileHeader)
+            throws IOException {
+        ZipInputStream inputStream = null;
+        ByteArrayOutputStream outputStream = null;
+        try {
+            inputStream = zipFile.getInputStream(fileHeader);
+            int bytesToRead;
+            byte[] buffer = new byte[BUFF_SIZE];
+            outputStream = new ByteArrayOutputStream();
+            while ((bytesToRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesToRead);
+            }
+            return outputStream.toByteArray();
+        } catch (ZipException ex) {
+            throw new RuntimeException(ex);
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+            if (outputStream != null) {
+                outputStream.close();
+            }
+        }
+    }
+
+
+
+    /**
      * Formats file size, applying KB, MB, GB units.
      * @param size Size to format
      * @return 

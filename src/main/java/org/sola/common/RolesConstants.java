@@ -36,6 +36,8 @@ public class RolesConstants {
     // DASHBOARD
     public static final String DASHBOARD_VIEW_ASSIGNED_APPS = "DashbrdViewAssign";
     public static final String DASHBOARD_VIEW_UNASSIGNED_APPS = "DashbrdViewUnassign";
+    public static final String DASHBOARD_VIEW_OWN_APPS = "DashbrdViewOwn";
+
     // APPLICATION
     public static final String APPLICATION_VIEW_APPS = "ApplnView";
     public static final String APPLICATION_CREATE_APPS = "ApplnCreate";
@@ -91,6 +93,10 @@ public class RolesConstants {
     // REPORTS
     public static final String REPORTS_VIEW = "ReportGenerate";
     public static final String REPORTS_GENDER = "ReportGender";
+    
+    // ARCHIVE
+    public static final String ARCHIVE_ARCHIVE_APPS = "ArchiveApps";
+    
     // ADMIN
     public static final String ADMIN_MANAGE_SECURITY = "ManageSecurity";
     public static final String ADMIN_MANAGE_REFDATA = "ManageRefdata";
@@ -99,7 +105,15 @@ public class RolesConstants {
     public static final String ADMIN_CHANGE_PASSWORD = "ChangePassword";
     // BULK APPLICATION
     public static final String BULK_APPLICATION = "BulkApplication";
-    //CONSOLIDATION
+    
+    // DISPUTES 
+    public static final String ADMINISTRATIVE_DISPUTE_VIEW = "DisputeView";
+    public static final String ADMINISTRATIVE_DISPUTE_SAVE = "DisputeSave";
+    public static final String ADMINISTRATIVE_DISPUTE_COMMENTS_SAVE = "DisputeCommentsSave";
+    public static final String ADMINISTRATIVE_DISPUTE_SEARCH = "DisputeSearch";
+    public static final String ADMINISTRATIVE_DISPUTE_PARTY_SAVE = "DisputePartySave";
+	
+	//CONSOLIDATION
     public static final String CONSOLIDATION_EXTRACT = "consolidationExt";
     public static final String CONSOLIDATION_CONSOLIDATE = "consolidationCons";
     // COMMUNITY SERVER
