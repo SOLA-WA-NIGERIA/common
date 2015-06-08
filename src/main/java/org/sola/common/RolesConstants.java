@@ -68,6 +68,7 @@ public class RolesConstants {
     public static final String ADMINISTRATIVE_BA_UNIT_SEARCH = "BaunitSearch";
     public static final String ADMINISTRATIVE_SYSTEMATIC_REGISTRATION = "systematicRegn";
     public static final String ADMINISTRATIVE_RIGHTS_EXPORT = "RightsExport";
+    public static final String ADMINISTRATIVE_ASSIGN_TEAM = "BaunitTeam";
     // TRANSACTIONAL DOCUMENTS
     public static final String SOURCE_TRANSACTIONAL = "TransactionCommit";
     // DOCUMENTS
@@ -78,6 +79,7 @@ public class RolesConstants {
     public static final String GIS_VIEW_MAP = "ViewMap";
     public static final String GIS_PRINT = "PrintMap";
     public static final String GIS_EXPORT_MAP = "ExportMap";
+    public static final String GIS_MEASURE_MAP = "MeasureMap";
     public static final String GIS_FEATURE_EDITOR = "MapFeatureEditor";
     public static final String GIS_ZONE_EDITOR = "MapZoneEditor";
     // CADASTRE
@@ -113,6 +115,12 @@ public class RolesConstants {
     public static final String CLASSIFICATION_SECRET = "04SEC_Secret";
     public static final String CLASSIFICATION_TOPSECRET = "05SEC_TopSecret";
     public static final String CLASSIFICATION_SUPPRESSION_ORDER = "10SEC_SuppressOrd";
-    
-    
+    // SERVICES
+     public static final String SERVICE_START_CHECKLIST = "checklist";
+     public static final String SERVICE_START_PUBLIC_DISPLAY = "publicDisplay";
+     public static final String SERVICE_START_OBJECTIONS = "slObjection";
+     public static final String SERVICE_START_NOTIFY = "slNotify";
+     public static final String SERVICE_START_NEGOTIATE = "slNegotiate";
+     // WORKFLOW
+     public static final String WORKFLOW_EDIT_OBJECTION_COMMENT = "ObjectionCommentEdit";
 }

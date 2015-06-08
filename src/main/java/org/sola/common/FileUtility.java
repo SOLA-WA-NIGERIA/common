@@ -46,6 +46,11 @@ import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 import javax.swing.ImageIcon;
 import org.apache.commons.io.FileUtils;
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.model.FileHeader;
+import net.lingala.zip4j.model.ZipParameters;
+import net.lingala.zip4j.util.Zip4jConstants;
 import org.apache.sanselan.Sanselan;
 import org.jvnet.staxex.StreamingDataHandler;
 import org.sola.common.messaging.ClientMessage;
@@ -826,33 +831,69 @@ public class FileUtility {
         }
     }
 
-    /**
+    public static String compress(String fileName, String password) {
+        fileName = sanitizeFileName(fileName, true);
+        String inputFilePath = getCachePath() + File.separator + fileName;
+        String zipFileName = getFileNameWithoutExtension(fileName) + ".zip";
+        String outputFilePath = getCachePath() + File.separator + zipFileName;
+        try {
+            ZipFile zipFile = new ZipFile(outputFilePath);
+            File inputFile = new File(inputFilePath);
+            ZipParameters parameters = new ZipParameters();
+            parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+            parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_ULTRA);
+            parameters.setEncryptFiles(true);
+            parameters.setEncryptionMethod(Zip4jConstants.ENC_METHOD_AES);
+            parameters.setAesKeyStrength(Zip4jConstants.AES_STRENGTH_256);
+            parameters.setPassword(password);
+            zipFile.addFile(inputFile, parameters);
+            return zipFileName;
+        } catch (ZipException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public static String uncompress(String fileName, String password) throws ZipException {
+        fileName = sanitizeFileName(fileName, true);
+        //Full path of the file that is compressed
+        String inputFilePath = getCachePath() + File.separator + fileName;
+        String destinationPath = getCachePath();
+        ZipFile zipFile = new ZipFile(inputFilePath);
+        if (zipFile.isEncrypted()) {
+            zipFile.setPassword(password);
+        }
+        FileHeader fileHeader = (FileHeader) zipFile.getFileHeaders().get(0);
+        String fileUncompressed = fileHeader.getFileName();
+        zipFile.extractAll(destinationPath);
+        return fileUncompressed;
+    }
+    
+    /** 
      * Formats file size, applying KB, MB, GB units.
-     *
      * @param size Size to format
-     * @return
+     * @return 
      */
-    public static String formatFileSize(long size) {
-        if (size == 0) {
+    public static String formatFileSize(long size){
+        if(size == 0){
             return "0";
         }
-
-        if (size < 1024) {
+        
+        if(size < 1024){
             return size + "B";
         }
-
-        if (size >= 1024 && size < 1048576) {
-            return Math.round((size / 1024) * 100.0) / 100.0 + "KB";
+        
+        if(size >= 1024 && size < 1048576){
+            return Math.round((size/1024)*100.0)/100.0 + "KB";
         }
-
-        if (size >= 1048576 && size < 1073741824) {
-            return Math.round((size / 1024 / 1024) * 100.0) / 100.0 + "MB";
+        
+        if(size >= 1048576 && size < 1073741824){
+            return Math.round((size/1024/1024)*100.0)/100.0 + "MB";
         }
-
-        if (size >= 1073741824 && size < 1099511627776L) {
-            return Math.round((size / 1024 / 1024 / 1024) * 100.0) / 100.0 + "GB";
+        
+        if(size >= 1073741824 && size < 1099511627776L){
+            return Math.round((size/1024/1024/1024)*100.0)/100.0 + "GB";
         }
-
-        return Math.round((size / 1024 / 1024 / 1024 / 1024) * 100.0) / 100.0 + "TB";
+        
+        return Math.round((size/1024/1024/1024/1024)*100.0)/100.0 + "TB";
     }
 }
